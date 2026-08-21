@@ -39,7 +39,8 @@
 <body>
 
 <div class="container">
-    <h1>🚗 Trắc Nghiệm B1 - Sát Hạch Mô Phỏng</h1>
+    <h1>Trắc Nghiệm Sát Hạch Mô Phỏng</h1>
+    <h1>(Dựa theo Phụ lục I của TT-17/2026/TT-BXD ngày 29/04/2026)</h1>
     
     <div class="controls">
         <select id="examSelect">
@@ -47,10 +48,10 @@
             <option value="2">Đề số 2 (Câu 31 - 60)</option>
             <option value="3">Đề số 3 (Câu 61 - 90)</option>
             <option value="4">Đề số 4 (Câu 91 - 120)</option>
-            <option value="random">🎲 Đề Ngẫu Nhiên (Bốc 30 câu bất kỳ)</option>
+            <option value="random"> Đề Ngẫu Nhiên (Bốc 30 câu bất kỳ)</option>
         </select>
         <div id="timer">Thời gian: 20:00</div>
-        <button id="startBtn" onclick="startExam()">Bắt đầu làm bài</button>
+        <button id="startBtn" onclick="startExam()">Bắt đầu mần bài</button>
     </div>
 
     <div id="examArea"></div>
@@ -59,7 +60,7 @@
     <div id="resultArea" class="result"></div>
 
     <div class="history-section">
-        <h2>📊 Lịch Sử Sát Hạch</h2>
+        <h2>Lịch Sử mần bài</h2>
         <table id="historyTable">
             <thead>
                 <tr>
@@ -77,7 +78,6 @@
 </div>
 
 <script>
-    // 👉👉👉 DÁN TOÀN BỘ 120 CÂU CỦA M VÀO ĐÂY (Thay thế cục mockData120 bên dưới) 👈👈👈
 const mockData120 = [
 {q: "Câu 1: Bạn đang lái xe và gặp tình huống có người đi bộ phía sau xe tải. Trong khi xe tải lớn phía trước đang che khuất hoàn toàn tầm nhìn bên phải của bạn, người đi bộ bất ngờ bước ra từ sau xe tải đó. Phương án xử lý của bạn là:[cite: 2]", o: ["A. Chủ động rà phanh trước khi vượt qua điểm khuất, hạ tốc độ sâu, giữ khoảng cách an toàn và ưu tiên nhường đường.[cite: 2]", "B. Tăng tốc thật nhanh để vượt qua xe tải và tránh người đi bộ.[cite: 2]", "C. Giữ tốc độ và bấm còi liên tục để cảnh báo người đi bộ.[cite: 2]", "D. Dừng lại đột ngột ngay giữa đường để chờ người đi bộ đi sang hết.[cite: 2]"], a: 0},
 {q: "Câu 2: Bạn đang lái xe qua khu vực có dải phân cách, nơi thường xuyên có người băng qua đường không đúng nơi quy định. Bất ngờ, bạn thấy một người đi bộ bước xuống phần đường xe chạy từ phía dải phân cách. Phương án xử lý của bạn là:[cite: 2]", o: ["A. Giảm tốc độ từ sớm, quan sát kỹ hướng di chuyển của người đi bộ và dừng lại an toàn nếu họ vẫn tiếp tục sang đường.[cite: 2]", "B. Tăng tốc để vượt qua trước khi người đi bộ kịp sang đến làn đường của mình.[cite: 2]", "C. Tiếp tục giữ nguyên tốc độ và chỉ nhấn còi để cảnh báo người đi bộ tránh ra.[cite: 2]", "D. Dừng lại đột ngột ngay lập tức dù xe phía sau đang bám sát để nhường đường.[cite: 2]"], a: 0},
@@ -289,7 +289,7 @@ function renderQuestions() {
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             document.getElementById("timer").innerText = "HẾT GIỜ!";
-            alert("Đã hết thời gian làm bài! Hệ thống tự động nộp bài.");
+            alert("Hết tg mần làm bài r ! Đợi tí");
             submitExam();
         }
         timeLeft--;
@@ -327,19 +327,19 @@ function renderQuestions() {
         resultArea.style.display = "block";
         
         const total = currentExam.length; // 30 câu
-        const passScore = 26; // Luật thi B1: Đúng từ 26/30 trở lên
+        const passScore = 27; // Luật thi B1: Đúng từ 27/30 trở lên
         
         if (score >= passScore) {
             resultArea.className = "result pass";
-            resultArea.innerHTML = `🎉 Tuyệt vời! M đạt ${score}/${total} câu. Sẵn sàng đi lấy bằng rồi!`;
+            resultArea.innerHTML = `Tạm ok, đạt ${score}/${total} câu.`;
         } else {
             resultArea.className = "result fail";
-            resultArea.innerHTML = `😢 Toang rồi! M chỉ đạt ${score}/${total} câu. (Cần đúng ít nhất ${passScore}/${total}). Cày lại thôi!`;
+            resultArea.innerHTML = `Tạch. Đúng được có ${score}/${total} câu. (Cần đúng ít nhất ${passScore}/${total}). Mần lại!`;
         }
         
         document.getElementById("submitBtn").style.display = "none";
         document.getElementById("startBtn").style.display = "block";
-        document.getElementById("startBtn").innerText = "Làm lại bài";
+        document.getElementById("startBtn").innerText = "Mần lại bài";
 
         // Ghi lịch sử
         const examName = document.getElementById("examSelect").options[document.getElementById("examSelect").selectedIndex].text;
@@ -370,7 +370,7 @@ function renderQuestions() {
         historyBody.innerHTML = "";
         
         if (history.length === 0) {
-            historyBody.innerHTML = `<tr><td colspan="4">Chưa có dữ liệu thi. Làm thử một bài đi m!</td></tr>`;
+            historyBody.innerHTML = `<tr><td colspan="4">Nỏ có dự liệu thi, cắp đít mần một bài đi</td></tr>`;
             return;
         }
 
@@ -391,7 +391,7 @@ function renderQuestions() {
     }
 
     function clearHistory() {
-        if(confirm("M có chắc muốn xóa sạch lịch sử làm bài không?")) {
+        if(confirm("Xóa sạch lịch sử làm bài?")) {
             localStorage.removeItem("b1_120_history");
             renderHistory();
         }
