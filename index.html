@@ -256,7 +256,7 @@ const mockData120 = [
         timerInterval = setInterval(updateTimer, 1000);
     }
 
-    function renderQuestions() {
+function renderQuestions() {
         const examArea = document.getElementById("examArea");
         examArea.innerHTML = "";
         
@@ -266,11 +266,12 @@ const mockData120 = [
             
             let optionsHtml = "";
             item.o.forEach((opt, i) => {
+                // Đã fix chuẩn Regex để xóa sạch các đuôi[cite: 1],[cite: 2]...
                 let cleanOpt = opt.replace(/\/g, "").trim();
                 optionsHtml += `<label id="label-q${index}-o${i}"><input type="radio" name="q${index}" value="${i}"> ${cleanOpt}</label>`;
             });
 
-            // Sửa lại tiêu đề hiển thị: Cắt chữ "Câu X:" trong data gốc để hiển thị theo số thứ tự mới
+            // Gọt sạch rác ở câu hỏi và đánh số thứ tự mới
             let cleanQ = item.q.replace(/\/g, "").trim();
             cleanQ = cleanQ.replace(/^Câu \d+:/, `Câu ${index + 1}:`);
 
