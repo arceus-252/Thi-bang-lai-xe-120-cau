@@ -266,20 +266,19 @@ function renderQuestions() {
             
             let optionsHtml = "";
             item.o.forEach((opt, i) => {
-                // Đã fix chuẩn Regex để xóa sạch các đuôi[cite: 1],[cite: 2]...
-                let cleanOpt = opt.replace(/\/g, "").trim();
+                // Đã đổi sang lệnh split để cắt đuôi rác an toàn 100%
+                let cleanOpt = opt.split("[cite")[0].trim();
                 optionsHtml += `<label id="label-q${index}-o${i}"><input type="radio" name="q${index}" value="${i}"> ${cleanOpt}</label>`;
             });
 
             // Gọt sạch rác ở câu hỏi và đánh số thứ tự mới
-            let cleanQ = item.q.replace(/\/g, "").trim();
+            let cleanQ = item.q.split("[cite")[0].trim();
             cleanQ = cleanQ.replace(/^Câu \d+:/, `Câu ${index + 1}:`);
 
             div.innerHTML = `<h3>${cleanQ}</h3><div class="options">${optionsHtml}</div>`;
             examArea.appendChild(div);
         });
     }
-
     function updateTimer() {
         if (isSubmitted) return;
         const m = Math.floor(timeLeft / 60);
