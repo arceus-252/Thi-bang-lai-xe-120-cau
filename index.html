@@ -8,13 +8,12 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
         .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h1 { text-align: center; color: #2c3e50; }
-        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #e8f4f8; border-radius: 8px; }
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #e8f4f8; border-radius: 8px; flex-wrap: wrap; gap: 10px;}
         select, button { padding: 10px 15px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; outline: none; }
         button { background-color: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
         button:hover { background-color: #219150; }
         #timer { font-size: 20px; font-weight: bold; color: #c0392b; }
         
-        /* Giao diện câu hỏi */
         .question-card { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
         .question-card h3 { margin-top: 0; color: #2980b9; font-size: 18px; line-height: 1.4; }
         .options label { display: block; margin: 10px 0; padding: 10px; background: #fff; border: 1px solid #eee; border-radius: 5px; cursor: pointer; transition: 0.2s; }
@@ -26,7 +25,6 @@
         .pass { background-color: #d4edda; color: #155724; }
         .fail { background-color: #f8d7da; color: #721c24; }
 
-        /* Giao diện Lịch sử làm bài */
         .history-section { margin-top: 40px; padding-top: 20px; border-top: 2px dashed #ccc; }
         .history-section h2 { color: #2c3e50; text-align: center; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -41,14 +39,17 @@
 <body>
 
 <div class="container">
-    <h1>🚗 Trắc Nghiệm B1 - 120 Câu Mô Phỏng</h1>
+    <h1>🚗 Trắc Nghiệm B1 - Sát Hạch Mô Phỏng</h1>
     
     <div class="controls">
         <select id="examSelect">
-            <option value="all">Làm toàn bộ 120 Câu</option>
-            <!-- M có thể tự chia thành Đề 1 (từ 1-30), Đề 2... nếu thích -->
+            <option value="1">Đề số 1 (Câu 1 - 30)</option>
+            <option value="2">Đề số 2 (Câu 31 - 60)</option>
+            <option value="3">Đề số 3 (Câu 61 - 90)</option>
+            <option value="4">Đề số 4 (Câu 91 - 120)</option>
+            <option value="random">🎲 Đề Ngẫu Nhiên (Bốc 30 câu bất kỳ)</option>
         </select>
-        <div id="timer">Thời gian: 60:00</div>
+        <div id="timer">Thời gian: 20:00</div>
         <button id="startBtn" onclick="startExam()">Bắt đầu làm bài</button>
     </div>
 
@@ -57,19 +58,18 @@
     <button id="submitBtn" onclick="submitExam()" style="display: none; width: 100%; margin-top: 20px; background-color: #2980b9;">Nộp bài</button>
     <div id="resultArea" class="result"></div>
 
-    <!-- KHU VỰC LỊCH SỬ LÀM BÀI -->
     <div class="history-section">
-        <h2>📊 Lịch Sử Làm Bài Của M</h2>
+        <h2>📊 Lịch Sử Sát Hạch</h2>
         <table id="historyTable">
             <thead>
                 <tr>
+                    <th>Đề thi</th>
                     <th>Ngày/Giờ</th>
                     <th>Điểm số</th>
                     <th>Kết quả</th>
                 </tr>
             </thead>
             <tbody id="historyBody">
-                <!-- Dữ liệu lịch sử sẽ tự động chèn vào đây -->
             </tbody>
         </table>
         <button class="clear-btn" onclick="clearHistory()">Xóa lịch sử</button>
@@ -77,8 +77,8 @@
 </div>
 
 <script>
-    // Dữ liệu bộ 120 câu (T làm sẵn 3 câu đầu làm mẫu)
- const mockData120 = [
+    // 👉👉👉 DÁN TOÀN BỘ 120 CÂU CỦA M VÀO ĐÂY (Thay thế cục mockData120 bên dưới) 👈👈👈
+const mockData120 = [
 {q: "Câu 1: Bạn đang lái xe và gặp tình huống có người đi bộ phía sau xe tải. Trong khi xe tải lớn phía trước đang che khuất hoàn toàn tầm nhìn bên phải của bạn, người đi bộ bất ngờ bước ra từ sau xe tải đó. Phương án xử lý của bạn là:[cite: 2]", o: ["A. Chủ động rà phanh trước khi vượt qua điểm khuất, hạ tốc độ sâu, giữ khoảng cách an toàn và ưu tiên nhường đường.[cite: 2]", "B. Tăng tốc thật nhanh để vượt qua xe tải và tránh người đi bộ.[cite: 2]", "C. Giữ tốc độ và bấm còi liên tục để cảnh báo người đi bộ.[cite: 2]", "D. Dừng lại đột ngột ngay giữa đường để chờ người đi bộ đi sang hết.[cite: 2]"], a: 0},
 {q: "Câu 2: Bạn đang lái xe qua khu vực có dải phân cách, nơi thường xuyên có người băng qua đường không đúng nơi quy định. Bất ngờ, bạn thấy một người đi bộ bước xuống phần đường xe chạy từ phía dải phân cách. Phương án xử lý của bạn là:[cite: 2]", o: ["A. Giảm tốc độ từ sớm, quan sát kỹ hướng di chuyển của người đi bộ và dừng lại an toàn nếu họ vẫn tiếp tục sang đường.[cite: 2]", "B. Tăng tốc để vượt qua trước khi người đi bộ kịp sang đến làn đường của mình.[cite: 2]", "C. Tiếp tục giữ nguyên tốc độ và chỉ nhấn còi để cảnh báo người đi bộ tránh ra.[cite: 2]", "D. Dừng lại đột ngột ngay lập tức dù xe phía sau đang bám sát để nhường đường.[cite: 2]"], a: 0},
 {q: "Câu 3: Phía trước bạn là một chiếc xe buýt đang dừng tại điểm để đón trả khách. Bạn nhận thấy xe phía trước đang phanh lại hoặc có khả năng có người đi bộ bất ngờ bước ra từ phía đầu xe buýt. Phương án xử lý của bạn là:[cite: 2]", o: ["A. Nhấn còi liên tục và tăng tốc để vượt qua xe buýt thật nhanh.[cite: 2]", "B. Giữ khoảng cách rộng hơn bình thường với xe buýt, chủ động giảm tốc độ và quan sát kỹ hai bên đầu xe buýt để phòng ngừa người đi bộ băng ngang.[cite: 2]", "C. Tiếp tục di chuyển sát xe buýt để không cho người đi bộ có khoảng trống đi ra.[cite: 2]", "D. Dừng lại hằn phía sau xe buýt và chờ cho đến khi xe buýt chuyển bánh mới đi tiếp.[cite: 2]"], a: 1},
@@ -201,16 +201,48 @@
 {q: "Câu 120: Tại khu vực có trường học với biển cảnh báo và rất nhiều học sinh đang tan trường đi lại đông đúc, xe phía trước đang giảm tốc độ sâu để nhường đường. Phương án xử lý của bạn là:[cite: 2]", o: ["A. Nhấn ga tăng tốc để nhanh chóng thoát khỏi khu vực đông đúc học sinh này.[cite: 2]", "B. Bấm còi liên tục và dồn dập để yêu cầu học sinh phải tránh đường cho xe đi.[cite: 2]", "C. Giảm tốc độ, giữ khoảng cách an toàn và sẵn sàng nhường đường cho học sinh.[cite: 2]", "D. Phanh gấp và dừng xe ngay giữa công trường để chờ học sinh đi hết mới đi tiếp.[cite: 2]"], a: 2}
 ];
     let timerInterval;
-    let timeLeft = 60 * 60; // Set 60 phút nếu quất 1 lần 120 câu
+    let timeLeft = 20 * 60; // 20 phút chuẩn thi thật
+    let currentExam = [];
     let isSubmitted = false;
 
-    // Load lịch sử ngay khi vừa vào trang web
     window.onload = function() {
         renderHistory();
     };
 
+    // Hàm xáo trộn mảng (đảo vị trí câu hỏi)
+    function shuffleArray(array) {
+        let shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
     function startExam() {
+        const examType = document.getElementById("examSelect").value;
+        let pool = [];
+
+        // Kiểm tra data có đủ chưa (phòng hờ m chưa dán đủ 120 câu)
+        if (mockData120.length < 120) {
+            alert("Lỗi: Dữ liệu chưa đủ 120 câu! M nhớ dán đủ cục 120 câu vào code nhé.");
+            return;
+        }
+
+        // Lọc 30 câu theo đề
+        if (examType === "1") pool = mockData120.slice(0, 30);
+        else if (examType === "2") pool = mockData120.slice(30, 60);
+        else if (examType === "3") pool = mockData120.slice(60, 90);
+        else if (examType === "4") pool = mockData120.slice(90, 120);
+        else if (examType === "random") {
+            // Đề ngẫu nhiên: Xáo toàn bộ 120 câu rồi bốc 30 câu đầu tiên
+            pool = shuffleArray(mockData120).slice(0, 30);
+        }
+
+        // Đảo luôn vị trí 30 câu vừa bốc được để mỗi lần thi là một thứ tự khác nhau
+        currentExam = shuffleArray(pool);
         isSubmitted = false;
+
         document.getElementById("startBtn").style.display = "none";
         document.getElementById("submitBtn").style.display = "block";
         document.getElementById("resultArea").style.display = "none";
@@ -218,8 +250,8 @@
         renderQuestions();
         
         clearInterval(timerInterval);
-        timeLeft = 60 * 60;
-        document.getElementById("timer").innerText = "Thời gian: 60:00";
+        timeLeft = 20 * 60;
+        document.getElementById("timer").innerText = "Thời gian: 20:00";
         document.getElementById("timer").style.color = "#c0392b";
         timerInterval = setInterval(updateTimer, 1000);
     }
@@ -228,18 +260,20 @@
         const examArea = document.getElementById("examArea");
         examArea.innerHTML = "";
         
-        mockData120.forEach((item, index) => {
+        currentExam.forEach((item, index) => {
             const div = document.createElement("div");
             div.className = "question-card";
             
             let optionsHtml = "";
             item.o.forEach((opt, i) => {
-                // Tự động làm sạch tag[cite: 2] nếu m lười xóa
                 let cleanOpt = opt.replace(/\/g, "").trim();
                 optionsHtml += `<label id="label-q${index}-o${i}"><input type="radio" name="q${index}" value="${i}"> ${cleanOpt}</label>`;
             });
 
+            // Sửa lại tiêu đề hiển thị: Cắt chữ "Câu X:" trong data gốc để hiển thị theo số thứ tự mới
             let cleanQ = item.q.replace(/\/g, "").trim();
+            cleanQ = cleanQ.replace(/^Câu \d+:/, `Câu ${index + 1}:`);
+
             div.innerHTML = `<h3>${cleanQ}</h3><div class="options">${optionsHtml}</div>`;
             examArea.appendChild(div);
         });
@@ -267,7 +301,7 @@
         
         let score = 0;
         
-        mockData120.forEach((item, index) => {
+        currentExam.forEach((item, index) => {
             const options = document.getElementsByName(`q${index}`);
             let selectedValue = -1;
 
@@ -291,12 +325,12 @@
         const resultArea = document.getElementById("resultArea");
         resultArea.style.display = "block";
         
-        const total = mockData120.length;
-        const passScore = Math.floor(total * 0.9); // Qua môn nếu đạt 90%
+        const total = currentExam.length; // 30 câu
+        const passScore = 26; // Luật thi B1: Đúng từ 26/30 trở lên
         
         if (score >= passScore) {
             resultArea.className = "result pass";
-            resultArea.innerHTML = `🎉 Tuyệt vời! M đạt ${score}/${total} câu. Trùm đường bộ đây rồi!`;
+            resultArea.innerHTML = `🎉 Tuyệt vời! M đạt ${score}/${total} câu. Sẵn sàng đi lấy bằng rồi!`;
         } else {
             resultArea.className = "result fail";
             resultArea.innerHTML = `😢 Toang rồi! M chỉ đạt ${score}/${total} câu. (Cần đúng ít nhất ${passScore}/${total}). Cày lại thôi!`;
@@ -306,27 +340,26 @@
         document.getElementById("startBtn").style.display = "block";
         document.getElementById("startBtn").innerText = "Làm lại bài";
 
-        // GỌI HÀM LƯU LỊCH SỬ
-        saveHistory(score, total, score >= passScore);
+        // Ghi lịch sử
+        const examName = document.getElementById("examSelect").options[document.getElementById("examSelect").selectedIndex].text;
+        saveHistory(examName, score, total, score >= passScore);
     }
 
-    // --- CÁC HÀM XỬ LÝ LỊCH SỬ LÀM BÀI ---
-    function saveHistory(score, total, isPass) {
+    function saveHistory(examName, score, total, isPass) {
         let history = JSON.parse(localStorage.getItem("b1_120_history")) || [];
-        
         const now = new Date();
         const dateStr = now.toLocaleDateString('vi-VN') + " " + now.toLocaleTimeString('vi-VN');
         
         const newRecord = {
+            exam: examName,
             date: dateStr,
             score: `${score}/${total}`,
             status: isPass ? "ĐẠT" : "TRƯỢT"
         };
         
-        history.unshift(newRecord); // Đẩy bài mới thi lên đầu danh sách
+        history.unshift(newRecord);
         localStorage.setItem("b1_120_history", JSON.stringify(history));
-        
-        renderHistory(); // Cập nhật lại bảng
+        renderHistory();
     }
 
     function renderHistory() {
@@ -336,14 +369,18 @@
         historyBody.innerHTML = "";
         
         if (history.length === 0) {
-            historyBody.innerHTML = `<tr><td colspan="3">Chưa có dữ liệu thi. Làm thử một bài đi m!</td></tr>`;
+            historyBody.innerHTML = `<tr><td colspan="4">Chưa có dữ liệu thi. Làm thử một bài đi m!</td></tr>`;
             return;
         }
 
         history.forEach(record => {
             const tr = document.createElement("tr");
             const statusClass = record.status === "ĐẠT" ? "status-pass" : "status-fail";
+            // Check nếu bản ghi cũ chưa có trường exam
+            const examLabel = record.exam ? record.exam : "Đề cũ";
+            
             tr.innerHTML = `
+                <td>${examLabel}</td>
                 <td>${record.date}</td>
                 <td>${record.score}</td>
                 <td class="${statusClass}">${record.status}</td>
