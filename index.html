@@ -230,7 +230,11 @@ const mockData120 = [
         }
 
         // Lọc 30 câu theo đề
-        if  (examType === "random") {
+        if (examType === "1") pool = mockData120.slice(0, 30);
+        else if (examType === "2") pool = mockData120.slice(30, 60);
+        else if (examType === "3") pool = mockData120.slice(60, 90);
+        else if (examType === "4") pool = mockData120.slice(90, 120);
+        else if (examType === "random") {
             // Đề ngẫu nhiên: Xáo toàn bộ 120 câu rồi bốc 30 câu đầu tiên
             pool = shuffleArray(mockData120).slice(0, 30);
         }
