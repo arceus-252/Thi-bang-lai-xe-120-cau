@@ -236,11 +236,9 @@ const mockData120 = [
         else if (examType === "4") pool = mockData120.slice(90, 120);
         else if (examType === "random") {
             // Đề ngẫu nhiên: Xáo toàn bộ 120 câu rồi bốc 30 câu đầu tiên
-            pool = shuffleArray(mockData120).slice(0, 30);
+            currentExam = shuffleArray(mockData120).slice(0, 30);
         }
 
-        // Đảo luôn vị trí 30 câu vừa bốc được để mỗi lần thi là một thứ tự khác nhau
-        currentExam = shuffleArray(pool);
         isSubmitted = false;
 
         document.getElementById("startBtn").style.display = "none";
